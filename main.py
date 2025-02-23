@@ -1,5 +1,43 @@
 #!/usr/bin/env pybricks-micropython
 
+# Ps4ControllerforEV3
+# This is a program that allows a PS4 controller to be used to control an EV3
+# over a bluetooth connection.
+# Requirements:
+# EV3 is running 
+# EV3 Robot.  For this example I assume a Riley Rover style robot with two back wheels and one front ball 
+# bearing swivel wheel.  Left Motor is on Port B, and Right Motor is on port C
+# A PS4 controller (but a PS3 controller should work as well)
+# A 16-32GB Micro SD card
+# USB A to USB Mini data cable to connect EV3 to Laptop
+# Laptop with Windows 11, but a Mac will work as well
+# Balena Etcher program downloaded onto Laptop
+# Microsoft VS Code development environment on Laptop
+#
+# Useful Links
+# https://www.antonsmindstorms.com/2020/02/14/how-to-connect-a-ps4-dualshock-4-controller-to-your-mindstorms-ev3-brick-with-bluetooth/#more-2357 
+# https://www.antonsmindstorms.com/2019/06/15/how-to-run-python-on-an-ev3-brick/
+# Python for the EV3 Brick…
+#     https://education.lego.com/en-us/product-resources/mindstorms-ev3/teacher-resources/python-for-ev3/
+# Now you need to get the sample code to start from.  The PS3 controller seems to work pretty much the same as the PS4 controller so far.  Sample code can be found here.
+#     https://www.antonsmindstorms.com/2019/06/16/how-to-use-a-ps3-gamepad-with-micropython-on-the-ev3-brick/ 
+#
+# Checklist
+#     SD card is in brick and it boots the BrickMan OS (EV3DEV)
+#     The EV3 has been connected to the PS4 controller.  On brick: Wireless and Networks, Bluetooth,
+#     the Powered and Visible options should be on (filled square)
+#     Connect to the PS4 controller - On brick, select Start Scan.  On PS4 press AND HOLD the share and PS buttons
+#     at the same time.  Wait until the front light on the PS4 starts flashing white RAPIDLY.  Not the slow pulsing.
+#     The device list on the brick will expand, so scroll down to see "Wireless Controller"
+#     Pair if it isn't already paired
+#     Connect if it is already paired.
+#     When you see "Disconnect", that means it is connected.
+#     Run the program on the brick by backing up (upper left button) until you see a menu with File Browser.
+#     Browse down to PS4ControllerforEV3 folder and then select the main.py file (this will run the program)
+#     The green lights will flash, and the program is running.  If it pops back to the menu right away, you probably
+#     don't have it connected to the controller.
+#     Pressing upper left button will stop the program.
+
 from pybricks import ev3brick as brick
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
@@ -58,9 +96,13 @@ def scale(val, src, dst):
 # look at contents of /proc/bus/input/devices if it doesn't work.
 infile_path = "/dev/input/event4"
 
+ev3.screen.print("Connecting...")
+wait(500)
+
 # open file in binary mode
 in_file = open(infile_path, "rb")
 
+ev3.screen.print("Opened Connect")
 # Read from the file
 # long int, long int, unsigned short, unsigned short, unsigned int
 FORMAT = 'llHHI'    
