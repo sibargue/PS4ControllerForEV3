@@ -1,7 +1,17 @@
 #!/usr/bin/env pybricks-micropython
 
-# PS4Controller Program to allow a PS4 Controller to drive an EV3 Robot.
+# Hagerty Robotics Program - EV3 GyroScope Testing
+# Version 1.0
+# Last Update 3/16/2025
 
+# This program is intended to test the accuracy of the EV3 Gyroscop on the EV3 brick"
+
+# This is a basic Riley Rover style robot.  I will add one Gyro sensor to the front center, and
+# one to the back center.  Then, perform a series of tests.
+# Test 1
+#      Drive in a circle and beep after every 45 degree turn.  Drive the circle twice.
+# Test 2
+#      Drive in a very small square using the gyro to make the 90 degree turns.  Drive the square twice.
 
 from pybricks import ev3brick as brick
 from pybricks.hubs import EV3Brick
@@ -14,51 +24,18 @@ from pybricks.robotics import DriveBase
 
 import struct
 
-VERSION = "2/22/2025"
-
-# The left stick will only activate if one of the two axis are above this level
-LEFT_STICK_THRESHOLD = 50
-
-# The amount of adjustment when found to not be driving straight
-DRIVE_STRAIGHT_ADJUSTMENT = 5
-
-# Number of degrees of difference before drive straight adjustment is applied
-DRIVE_STRAIGHT_THRESHOLD = 5
-
-# Ignore right stick values below this level so the robot won't go driving off if the joystick reports
-# very small levels while not being actively used (calibration error).  Also known as a deadband
-RIGHT_STICK_THRESHOLD = 5
-
 # Used to display on the brick screen
 ev3 = EV3Brick()
 
 # Declare motors 
 left_motor = Motor(Port.B)
 right_motor = Motor(Port.C)
-
-# Initialize variables. 
-# Assuming sticks are in the middle when starting.
-right_stick_x = 124
-right_stick_y = 124
-left_stick_x = 124
-left_stick_y = 124
-
-# A helper function for converting stick values (0 - 255)
-# to more usable numbers (-100 - 100)
-def scale(val, src, dst):
-    """
-    Scale the given value from the scale of src to the scale of dst.
  
-    val: float or int
-    src: tuple
-    dst: tuple
- 
-    example: print(scale(99, (0.0, 99.0), (-1.0, +1.0)))
-    """
-    return (float(val - src[0]) / (src[1] - src[0])) * (dst[1] - dst[0]) + dst[0]
+# Declare Gyros
+front_gyro = GyroSensor(Port.S1)
+back_gyro = GyroSensor(Port.S2)
 
-
-# Find the PS3 Gamepad:
+# Find the PS3 Gamepad for control:
 # /dev/input/event3 is the usual file handler for the gamepad.
 # look at contents of /proc/bus/input/devices if it doesn't work.
 infile_path = "/dev/input/event4"
@@ -71,10 +48,67 @@ in_file = open(infile_path, "rb")
 FORMAT = 'llHHI'    
 EVENT_SIZE = struct.calcsize(FORMAT)
 event = in_file.read(EVENT_SIZE)
-drive_straight = False
 
-# Display the program name and version on screen
-ev3.screen.print("VERSION")
+GYRO_CALIBRATION_LOOP_COUNT = 200
+INT TESTSPEED = 50
+
+int TEST_CIRCLE = 1
+int TEST_SQUARE = 2
+int curTest = TEST_CIRCLE
+
+# Used in a 90 degree turn.  First tuple is the angle, 
+# second tuple is how fast to go until you get to that angle
+turn_90 = (4, [70, 50], [80, 50], [85, 30], [89, 10])
+
+def right_turn_with_gyro( speed, l_motor, g_sensor )
+    index = 1
+    g_sensor.reset_angle(0)
+    while True
+        new_speed = speed[index][1]
+        ev3.screen.draw_text(10,10,index)
+        ev3.screen.draw_text(10,40,speed)
+        l_motor.dc( speed )
+        if  g_sensor(angle) > speed[index][0] 
+           index += 1
+        if index > speed[0]
+            l_motor.stop() 
+            break;
+
+right_turn_with_gyro( turn_90, left_motor, front_gyro)
+
+'''
+left_motor.dc(TESTSPEED)
+right_motor.dc(TESTSPEED * 0.80)
+front_gyro.reset_angle(0)
+back_gyro.reset_angle(0)
+lastPos = 0
+lastBeepPos = 0
+
+sleep(1000)
+while True
+    gyro_sensor_value = front_gyro.angle()
+    if ( gyro_sensor_value > 720 )
+        left_motor.stop()
+        right_motor.stop()
+        break
+
+    if gyro_sensor_value > lastBeepPos + 45
+        lastBeepPos += 45
+        ev3.speaker.beep(500,100)
+
+front_gyro.reset_angle(0)
+back_gyro.reset_angle(0)
+sleep(1000)    
+while True
+    left_motor.dc(TESTSPEED)
+    right_motor.dc(TESTSPEED)
+    sleep(500)
+
+    right_motor.stop()
+    while ( front_gyro.angle < 90 )
+    
+rightTurnPID( speed, theLeftMotor  )
+    left_motor
 
 while event:
     (tv_sec, tv_usec, ev_type, code, value) = struct.unpack(FORMAT, event)
@@ -112,7 +146,7 @@ while event:
             elif left_motor.angle() - right_motor.angle() < DRIVE_STRAIGHT_THRESHOLD:
                 adjust_to_drive_straight = DRIVE_STRAIGHT_ADJUSTMENT
               
-
+    # If the left joystick is far enough to the left or right, use it
     if fixed_left < LEFT_STICK_THRESHOLD and fixed_left > -LEFT_STICK_THRESHOLD:
         fixed_left = 0
 
@@ -141,7 +175,8 @@ while event:
         left_motor.dc(forward - left)
         right_motor.dc(forward + left)
 
-    # Finally, read another event
+     # Finally, read another event
     event = in_file.read(EVENT_SIZE)
 
 in_file.close()
+'''

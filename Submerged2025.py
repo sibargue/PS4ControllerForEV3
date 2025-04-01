@@ -1,7 +1,17 @@
 #!/usr/bin/env pybricks-micropython
 
-# PS4Controller Program to allow a PS4 Controller to drive an EV3 Robot.
+# Hagerty Robotics Program - EV3 Soccer Robot Program
+# Version 1.0
+# Last Update 2/21/2025
 
+# This program is based off of the "How to use a PS3 Gamepad with Pybricks MicroPython on the EV3 brick"
+# at www.antonsmindstorms.com.  The link is:
+# https://www.antonsmindstorms.com/2019/06/16/how-to-use-a-ps3-gamepad-with-micropython-on-the-ev3-brick/
+
+# This version adds the use of the left joystick to improve the ability to drive the robot in straight
+# lines and do point turns.  The right joystick is still an Arcade mode controller that is fed directly
+# to the motors with the minor change that a deadband prevents below threshold commands from slowly driving
+# the robot in case the joystick centering is off.
 
 from pybricks import ev3brick as brick
 from pybricks.hubs import EV3Brick
@@ -13,8 +23,6 @@ from pybricks.tools import print, wait, StopWatch
 from pybricks.robotics import DriveBase
 
 import struct
-
-VERSION = "2/22/2025"
 
 # The left stick will only activate if one of the two axis are above this level
 LEFT_STICK_THRESHOLD = 50
@@ -73,8 +81,7 @@ EVENT_SIZE = struct.calcsize(FORMAT)
 event = in_file.read(EVENT_SIZE)
 drive_straight = False
 
-# Display the program name and version on screen
-ev3.screen.print("VERSION")
+
 
 while event:
     (tv_sec, tv_usec, ev_type, code, value) = struct.unpack(FORMAT, event)
@@ -112,7 +119,7 @@ while event:
             elif left_motor.angle() - right_motor.angle() < DRIVE_STRAIGHT_THRESHOLD:
                 adjust_to_drive_straight = DRIVE_STRAIGHT_ADJUSTMENT
               
-
+    # If the left joystick is far enough to the left or right, use it
     if fixed_left < LEFT_STICK_THRESHOLD and fixed_left > -LEFT_STICK_THRESHOLD:
         fixed_left = 0
 
@@ -141,7 +148,7 @@ while event:
         left_motor.dc(forward - left)
         right_motor.dc(forward + left)
 
-    # Finally, read another event
+     # Finally, read another event
     event = in_file.read(EVENT_SIZE)
 
 in_file.close()
