@@ -1,8 +1,5 @@
 #!/usr/bin/env pybricks-micropython
 
-# PS4Controller Program to allow a PS4 Controller to drive an EV3 Robot.
-
-
 from pybricks import ev3brick as brick
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
@@ -13,8 +10,6 @@ from pybricks.tools import print, wait, StopWatch
 from pybricks.robotics import DriveBase
 
 import struct
-
-VERSION = "2/22/2025"
 
 # The left stick will only activate if one of the two axis are above this level
 LEFT_STICK_THRESHOLD = 50
@@ -73,8 +68,8 @@ EVENT_SIZE = struct.calcsize(FORMAT)
 event = in_file.read(EVENT_SIZE)
 drive_straight = False
 
-# Display the program name and version on screen
-ev3.screen.print("VERSION")
+ev3.screen.draw_text(10,10,"PS4Control")
+ev3.screen.draw_text(10,40,"02/22/25")
 
 while event:
     (tv_sec, tv_usec, ev_type, code, value) = struct.unpack(FORMAT, event)
