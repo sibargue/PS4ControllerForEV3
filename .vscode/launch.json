@@ -8,7 +8,7 @@
 			"name": "Download and Run",
 			"type": "ev3devBrowser",
 			"request": "launch",
-			"program": "/home/robot/${workspaceRootFolderName}/EV3SoccerTank.py",
+			"program": "/home/robot/${workspaceRootFolderName}/EV3Soccer.py",
 			"interactiveTerminal": false
 		}
 	]

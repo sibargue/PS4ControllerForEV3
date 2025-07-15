@@ -155,13 +155,14 @@ def handle_menu( in_file ):
 
         # When the direction pad should be returning negative one, I am seeing a very large number
         # Just adjusting the value to what I need here
-        if value > 2:
+        """
+            if value > 2:
             value = -1
-
-        #if ev_type != 0:
-        #    outtext = str(ev_type) + ":" + str(code) + ":" + str(selection) + ":" + str(selection) + "     "
-        #    ev3.screen.draw_text( 10,100, outtext, background_color=Color.WHITE)
-
+        """
+        if ev_type != 0:
+            outtext = str(ev_type) + ":" + str(code) + ":" + str(value) + ":" + str(selection) + "     "
+            ev3.screen.draw_text( 10,100, outtext, background_color=Color.WHITE)
+        """
         cur_selection = selection
         # Directional Pad Horizontal
         if ev_type == 3 and code == 16:
@@ -179,7 +180,7 @@ def handle_menu( in_file ):
             ev3.screen.draw_text( menu[cur_selection][0] - 10, menu[cur_selection][1], "  ", background_color=Color.WHITE)
             # Display the current selection marker
             ev3.screen.draw_text( menu[selection][0] - 10, menu[selection][1], "*")
-        
+        """        
         # Finally, read another event
         event = in_file.read(EVENT_SIZE)
 
@@ -194,12 +195,12 @@ infile_path = "/dev/input/event4"
 in_file = open(infile_path, "rb")
 
 # which port does the user want to test  
-# port = handle_menu( in_file )
+port = handle_menu( in_file )
 
 #mymotors = get_motors()
 #print( mymotors )
 
-motor_test("B")
+#motor_test("B")
 
 in_file.close()
 

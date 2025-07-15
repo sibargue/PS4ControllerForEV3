@@ -38,6 +38,114 @@ Python for the EV3 Brick…
 Now you need to get the sample code to start from.  The PS3 controller seems to work pretty much the same as the PS4 controller so far.  Sample code can be found here.
     https://www.antonsmindstorms.com/2019/06/16/how-to-use-a-ps3-gamepad-with-micropython-on-the-ev3-brick/ 
 
+Controller Research
+     The numbers shown below are the Event Type, Event Code, and Event Value for each event.
+        1:310:2 means Event Type 1, Event Code 310, and Value 2
+        
+     L1 Button -    This is binary.  Either gets the event when the button is pressed, or the event when the
+                    button is released
+        1:310:1     Button is pressed.  Once per button press
+        1:310:0     Button is released.
+
+     L2 Button -
+        1:312:1     Button is pressed.  Once per button press
+        3:2:2       The value of the button from 1 to 255  Another event comes in every time the button is pressed
+        3:2:13      a little more or less.  If you manage to keep it exactly the same, no new event comes in.
+        ...
+        1:312:0     Button is released
+        3:2:0       This event comeS in consistently after the button was released
+    
+    R1 Button -     Different values, but same behavior as L1
+        1:311:1
+        1:311:0
+
+    R2 Button -     Different values, but same behavior as L2
+        1:313:1
+        3:5:214
+        3:5:255
+        3:5:124
+        1:313:0
+        3:5:0
+
+    Left Joystick - Vertical Action:Push Up then release
+        3:1:123 - Joystick starts more or less centered at 127 
+        3:1:104 - Gets smaller
+        3:1:74  - and smaller...
+        3:1:28
+        3:1:0   - Until reaches zero
+        3:1:4   - And then increases as the stick is released
+        3:1:33  - and makes its way back to the center position
+        3:1:102 - Going down it increases up to 255 and repeats the
+        3:1:128 - retreat back to 128 (not shown here)
+
+    Left Joystick - Horizontal
+        3:0:0   - Positioned all the way to the left
+        3:0:128 - When it returns to the center position
+        3:0:255 - Positioned all the way to the right.  If you hold it here, no more events happen
+
+    Right Joystick - Vertical
+        3:4:0   - Positioned all the way to the top
+        3:4:128 - When it returns to the center position
+        3:4:255 - Positioned all the way to the bottom
+
+    Right Joystick - Horizontal
+        3:3:0   - Positioned all the way to the left
+        3:3:128 - When it returns to the center position
+        3:3:255 - Positioned all the way to the right.  If you hold it here, no more events happen
+
+    Squares Button 
+        1:308:1 Button Pressed
+        1:308:0 Button Released
+
+    Triangle Button 
+        1:307:1 Button Pressed
+        1:307:0 Button Released
+
+    Circle Button 
+        1:305:1 Button Pressed
+        1:305:0 Button Released
+    
+    Diamonds Button 
+        1:304:1 Button Pressed
+        1:304:0 Button Released
+
+    Direction Pad - Press then Release each button
+        Up - 3:17:4294967295 / 3:17:0
+        Left - 3:16:1 / 3:16:0
+        Down - 3:17:1 / 3:17:0
+        Right - 3:16:42949667295 / 3:16:0
+
+    Combinations
+    Actions: Left Stick Vertical Up, R2 Down, R2 released, Left Stick Released
+        3:1:118 Left Stick Vertical
+        3:1:88
+        3:1:45
+        3:1:0   Left Stick Vertical reaches top
+        3:0:133 Left Stick Horizontal close to center
+        3:0:137 "
+        3:0:138 "
+        1:313:1 R2 Pressed
+        3:5:164 R2 Value
+        3:5:255 R2 Value
+        3:0:139 Left Stick Horizontal close to center
+        3:0:142 "
+        3:0:143 "
+        3:0:144 "
+        3:1:1   Left Stick Vertical still near top
+        3:0:145 Left Stick Horizontal close to center
+        3:0:146 Left Stick Horizontal close to center
+        1:313:0 R2 Released
+        3:5:0   R2 Trailing 0 value after release
+        3:0:145 
+        3:0:146
+        3:0:143
+        3:1:0
+        3:0:141
+        3:1:42
+        3:0:128 Left Stick Horizontal returning to center
+        3:1:128 Left Stick Vertical returning to center
+
+
  Checklist
      SD card is in brick and it boots the BrickMan OS (EV3DEV)
      The EV3 has been connected to the PS4 controller.  On brick: Wireless and Networks, Bluetooth,
